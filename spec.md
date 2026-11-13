@@ -63,24 +63,120 @@ Người dùng chính là người mua. Người bán có quyền phản hồi c
 
 Chọn S01/S02 vì cùng giá trị giả lập nhưng lỗi theo hai hướng đối lập: từ chối oan và hoàn oan; chúng kiểm tra tính trung lập sâu hơn việc chỉ dừng mọi giao dịch. S09 có thể khẩn hơn trong thực tế, không khẳng định nhẹ hơn mọi trường hợp; trong lát cắt demo, S01/S02 phơi bày thêm lỗi nguồn và áp lực xã hội. Giữ S09 trong QA để không bỏ qua giá của chờ đợi. Loại cách chọn theo câu chuyện “kịch tính” vì không gắn tổn thất/khả năng đảo.
 
-## §3. Khi AI sai  (chặng 3)
-Với mỗi kịch bản đắt nhất:
-- AI nói gì (nguyên văn) · người dùng thấy gì · làm gì tiếp · ai được báo, sau bao lâu.
-- Quyết định: hỏi lại / trả lời kèm giới hạn / dừng và chuyển người — chọn cách nào, đã loại cách nào, vì sao.
-- Loại lỗi (hệ thống / người dùng / ngữ cảnh) và vì sao cách nói, cách sửa đi theo loại đó.
-- 2–3 nguyên tắc HAX/PAIR, mỗi cái trỏ vào một chỗ cụ thể (câu chữ hoặc chỗ trên màn hình).
-- Lỗi nào sửa câu chữ không cứu được (nếu có), và thiết kế cứu nó thế nào.
+## §3. Khi AI sai (chặng 3)
 
-## §4. Mức tự chủ  (chặng 4)
-Với mỗi tool:
-- Mức của nhóm (tự làm / cần người duyệt / cấm). Nếu cần người duyệt: ai duyệt · người duyệt thấy gì · quá hạn thì sao.
-- Lý do theo cost-of-error: sai thì ai chịu gì · đảo lại được không · chờ người thì mất gì.
-- Phương án đã cân nhắc và vì sao loại.
-Thêm:
-- Tool khó xếp nhất: mỗi người từng chọn gì, cái giá của mỗi phía (trỏ về kịch bản ở §2), nhóm chốt thế nào.
-- Thử mức đã đặt trên 2 kịch bản đắt nhất + 1 kịch bản bình thường: cái sai có bị chặn không? còn việc nào làm khi lẽ ra phải hỏi? người dùng bình thường có phải chờ vô ích không?
-- Luật thêm hoặc tool tách bước (nếu có), và vì sao.
-- Một mức tự chủ đã đổi lời hứa nào với người dùng.
+### S01 — Mô tả bị sửa sau khi đặt (F01 · Nồi chiên A · 1.200.000đ · còn 2 ngày)
+
+**Trigger:** `descriptionAtPurchase` ghi lòng nồi 6L, `descriptionCurrent` ghi 5L; người bán viện dẫn bản hiện tại để nói "giao đúng".
+
+- **AI nói (nguyên văn):**
+  > "Bản lưu lúc đặt ghi lòng nồi 6 lít; mô tả hiện tại ghi 5 lít. Hai bản khác nhau nên mình chưa thể kết luận. Mình cần phản hồi về hàng đã giao và căn cứ lúc đặt từ cả hai phía. Chưa có quyết định hoàn tiền hoặc từ chối."
+- **Người mua thấy:** hai bản mô tả có nhãn nguồn (lúc đặt / hiện tại); lời người mua và lời shop tách riêng; trạng thái **"Mâu thuẫn"**; hạn còn 2 ngày (chính sách giả định). Có 3 nút: bổ sung, sửa thông tin, chuyển người. **Không có nút tự nhận tiền.**
+- **Người bán thấy (màn hồ sơ):** nội dung khiếu nại, hai bản mô tả, yêu cầu giải thích vì sao giao 5L khi bản lúc đặt cam kết 6L, hạn phản hồi 24h giả định. Không thấy số điện thoại/địa chỉ người mua.
+- **Làm gì tiếp:** bổ sung hai phía (người mua xác nhận nhãn 5L đúng đơn; người bán xác nhận đã giao 5L) → trạng thái **"Đủ căn cứ xem xét"** → trưởng nhóm vẫn phải đọc hai phía và xác nhận riêng quyết định hoàn. Nếu chưa đủ: chỉ được bổ sung hoặc chuyển người.
+- **Ai được báo, sau bao lâu:** ngay khi bấm đối chiếu, `yeu_cau_bang_chung` ghi yêu cầu cho cả hai bên (tối đa 1 lần/bên/phiên bản); bấm chuyển người → `chuyen_truong_nhom` tạo hồ sơ ngay. Người bán có 24h phản hồi, trưởng nhóm có 48h xem xét (mục tiêu thiết kế, không phải cam kết dịch vụ).
+- **Không phản hồi / quá hạn:** gắn ưu tiên, chuyển trưởng nhóm, **tiếp tục chặn tiền**; không tự xử thua bên im lặng.
+- **Phục hồi:** sửa thông tin → tăng phiên bản hồ sơ, huỷ kết luận và xác nhận cũ; tin yêu cầu đã gửi không giả vờ "thu hồi". Sau quyết định tiền không hứa undo.
+
+**Quyết định:**
+- Đã cân nhắc: (a) hỏi lại "bạn chắc không?", (b) trả lời kèm giới hạn + thu thập phần thiếu, (c) dừng và chuyển người ngay không giải thích.
+- **Chọn (b), kèm quyền chuyển người bất cứ lúc nào.**
+- Vì sao: bản lưu đã cho thấy mâu thuẫn khách quan; AI có thể chỉ ra mâu thuẫn và nói rõ còn thiếu gì, giúp cả hai phía biết phải bổ sung gì.
+- Loại (a) vì đổ gánh nặng chứng minh lên khách trong khi bản lưu đã khác. Loại (c) vì khách không biết chỗ thiếu, có thể phải gửi lại từ đầu và mất thêm thời gian trong khi chỉ còn 2 ngày.
+
+**Loại lỗi:** **lỗi hệ thống** — nếu AI dùng `descriptionCurrent` thay cho `descriptionAtPurchase`. Vì là lỗi của hệ thống nên AI phải tự nhận, không đổ cho khách:
+> "Mình đã đối chiếu nhầm bản hiện tại. Mình đã bỏ kết luận cũ trong hồ sơ mô phỏng; quyết định tiền cần được xem lại."
+
+Cách sửa đi theo loại lỗi: khoá nguồn căn cứ là bản lúc đặt, huỷ mọi xác nhận cũ. Nếu **không có** bản lưu (S08) thì dừng kết luận, không suy luận theo F01.
+
+### S02 — Người bán có căn cứ đúng, người mua đòi hoàn kèm đe doạ (F02 · Nồi chiên B · 1.200.000đ · còn 3 ngày)
+
+**Trigger:** bản lúc đặt ghi "dung tích danh định 6 lít, lòng nồi có thể nhỏ hơn", tem 6L khớp; người mua đo lòng nồi 5L và dọa "bóc phốt".
+
+- **AI nói (nguyên văn):**
+  > "Tem 6 lít khớp dung tích danh định trong bản lúc đặt; số đo lòng nồi 5 lít chưa đủ chứng minh hàng sai mô tả. Bạn có thể bổ sung cách đo hoặc sai khác khác. Mình sẽ ghi nhận phản hồi của hai bên; lời đe doạ không thay đổi căn cứ. Chưa có quyết định hoàn tiền hoặc từ chối."
+- **Người mua thấy:** mô tả lúc đặt có chú thích phân biệt *dung tích danh định* và *lòng nồi*; trạng thái **"Chưa đủ căn cứ"**; được sửa cách hiểu, bổ sung, chuyển người. Khiếu nại **không bị tự đóng** chỉ vì shop nói đúng.
+- **Người bán thấy:** lý do khiếu nại, tem khớp nguồn, chỗ còn thiếu, hạn phản hồi 24h giả định; có đường xác nhận/bổ sung.
+- **Làm gì tiếp:** bổ sung hai phía (người mua xác nhận nhầm cách đo, không nêu sai khác khác; người bán xác nhận tem đúng đơn) → mới đủ căn cứ để **xem xét** từ chối, và trưởng nhóm vẫn phải duyệt.
+- **Ai được báo, sau bao lâu:** yêu cầu giải thích cách đo (tới người mua) và yêu cầu phản hồi (tới người bán) ghi ngay khi đối chiếu; trưởng nhóm nhận khi có yêu cầu chuyển hoặc khi giả lập quá hạn, mục tiêu xem trong 48h.
+- **Không phản hồi:** giữ "Chưa đủ căn cứ", gắn ưu tiên nếu quá hạn; im lặng không phải đồng ý. **Phục hồi:** chứng cứ mới hoặc sửa lời khai → huỷ xác nhận, xét lại từ đầu.
+
+**Quyết định:**
+- Đã cân nhắc: (a) hoàn ngay để xoa dịu, (b) tự từ chối vì tem khớp, (c) chuyển người không giải thích, (d) trả lời kèm giới hạn + một yêu cầu bổ sung cụ thể.
+- **Chọn (d).**
+- Vì sao: giữ trung lập — lời đe doạ không phải chứng cứ, nhưng tem khớp cũng chưa chứng minh mọi đặc tính đúng; người mua biết đúng chỗ cần bổ sung.
+- Loại (a) vì shop đúng mất 1.200.000đ và có thể mất hàng. Loại (b) vì tem chưa chứng minh toàn bộ hàng đúng mô tả. Loại (c) vì người mua không hiểu chỗ thiếu. Chuyển người vẫn luôn là quyền sẵn có.
+
+**Loại lỗi:** **lỗi ngữ cảnh** — câu "nồi ghi 6 lít" đúng, nhưng bị hiểu thành "mọi phép đo phải ra 6L". Cách nói phải tách hai đại lượng (danh định vs lòng nồi) và giữ quyền phản hồi, không phán ai nói dối. So sánh với các loại khác:
+- **Lỗi người dùng** (S10 chọn nhầm ảnh): hỏi trung tính, cho sửa, không quy kết gian lận.
+- **Lỗi hệ thống** (S08 thiếu bản lưu): nhận giới hạn, chặn quyết định; không xin khách "tin AI".
+
+### Ba nguyên tắc HAX/PAIR áp dụng
+
+| Nguyên tắc | Chỗ cụ thể | Hành vi quan sát được |
+|---|---|---|
+| **G11 — Giải thích vì sao hệ thống làm vậy** | Khối **[1] Căn cứ đối chiếu** và câu "Hai bản khác nhau nên mình chưa thể kết luận" | Bản lúc đặt, bản hiện tại, chứng cứ hai phía và lý do chưa kết luận hiển thị cùng nhau |
+| **G10 — Thu hẹp phạm vi khi không chắc** | Khối **[2] Bước tiếp theo / cổng duyệt** | Thiếu hoặc mâu thuẫn → không thể quyết định tiền; chỉ còn bổ sung có yêu cầu cụ thể hoặc chuyển người |
+| **G9 — Hỗ trợ sửa dễ dàng** | Nút **[3] Sửa thông tin** | Sửa lời khai tăng phiên bản, huỷ kết luận/duyệt cũ, giữ dấu vết nhật ký |
+
+### Lỗi mà sửa câu chữ không cứu được
+
+- **Lỗi:** AI nói "mình có thể sai" nhưng vẫn gọi `soan_hoan_tien` (hoặc `tu_choi_khieu_nai`) trước khi có người duyệt. Câu chữ khiêm tốn không ngăn được tiền đã chuyển.
+- **Thiết kế cứu:** chặn ở **cả nút lẫn hàm chuyển state**, không chỉ đổi nhãn nút. Hàm tiền chỉ chạy khi đủ 6 điều kiện: đúng vai trò trưởng nhóm (giả lập) · trạng thái đủ căn cứ · đã có phản hồi hai phía · đã tick đã đọc hồ sơ · đã chọn quyết định phù hợp fixture · xác nhận đúng phiên bản hiện tại. Mỗi hồ sơ chỉ có một kết quả.
+
+**Bốn đường kiểm tra luồng:** happy S07 → hướng dẫn ngay → hồ sơ duyệt; low-confidence S03 → chọn đúng đơn rồi làm rõ; failure S08 → báo không có bản lưu, chuyển người; correction S10 → sửa → kết luận/duyệt cũ hết hiệu lực → bổ sung hoặc chuyển người.
+
+---
+
+## §4. Mức tự chủ (chặng 4)
+
+### Mức cho từng tool
+
+| Tool / tác động thật | Mức của nhóm + điều kiện | Sai thì ai chịu gì · đảo được không | Chờ người thì mất gì | Phương án đã loại, vì sao |
+|---|---|---|---|---|
+| `yeu_cau_bang_chung` — gửi mẫu xin chứng cứ | **Tự làm** khi đã biết đơn và phần thiếu; tối đa 1 yêu cầu/bên/phiên bản; không hỏi lại thứ đã có; chỉ xin bằng chứng về hàng | Hai bên tốn công, hoặc lộ dữ liệu nếu mẫu quá rộng; tin đã tới không thu hồi được | S09 có thể hết hạn chỉ vì chờ duyệt một tin nhắn | *Cần duyệt*: làm chậm bước rẻ. *Tự gửi không giới hạn*: tạo áp lực, spam. Cho sửa yêu cầu tiếp theo, không hứa unsend |
+| `chuyen_truong_nhom` — chuyển hồ sơ cho người | **Tự làm** khi người dùng yêu cầu hoặc quá hạn; đính kèm căn cứ hiện có và chỗ thiếu | Chuyển nhầm: khách chờ, nhân viên quá tải; **đảo được** (huỷ chuyển nếu chưa có quyết định) | Duyệt trước khi chuyển tạo vòng chờ, S01/S09 càng chậm | *Cấm chuyển để tiết kiệm nhân lực*: bỏ rơi ca khó. *Cần duyệt*: vòng chờ vô nghĩa |
+| `soan_hoan_tien` — **hoàn tiền thật**, không phải soạn nháp | **Cần người duyệt** — trưởng nhóm xử lý khiếu nại | S02: shop đúng mất tiền và hàng; **khó đảo**, UI không có undo tiền | S07 khách chờ nhận tiền; S09 nguy cơ trễ. Giảm chờ bằng hướng dẫn ngay + ưu tiên, không bỏ cổng | *Tự làm*: dễ hoàn oan (S02, S04). *Cấm*: khách có căn cứ (S01, S07) không có đường giải quyết |
+| `tu_choi_khieu_nai` — đóng khiếu nại, tiền về shop | **Cần người duyệt** — trưởng nhóm xử lý khiếu nại | S01: người mua mất 1.200.000đ và quyền khiếu nại dù bản lúc đặt có lợi; **khó đảo** | Shop đúng (S02) chờ tiền lâu hơn, khách chờ kết luận | *Tự làm*: thiên về shop (dùng nhầm bản hiện tại). *Cấm*: khiếu nại không căn cứ không bao giờ kết thúc |
+| `phat_shop` — trừ uy tín / khoá shop | **Cấm** trong lát cắt này, không có nút | S05: ảnh hưởng cả shop và mọi đơn khác; khó đảo; một đơn lẻ không đủ căn cứ | Chậm bảo vệ người mua khác → AI báo trưởng nhóm định tuyến chuyên trách, không hứa xử phạt | *Tự làm / cần duyệt trong luồng thường*: vẫn vượt phạm vi quyết định về một đơn |
+
+### Cổng duyệt cho hai tool tiền
+
+- **Ai duyệt:** trưởng nhóm xử lý khiếu nại. Người mua bấm "đồng ý" **không** thay quyền duyệt. Tab đổi vai trò chỉ để demo, không phải xác thực nhân viên.
+- **Người duyệt thấy:** đơn, số tiền, bản lúc đặt và bản hiện tại, phản hồi hai phía, trạng thái thiếu/mâu thuẫn, phiên bản hồ sơ, hạn còn lại, nhật ký yêu cầu.
+- **Thao tác bắt buộc:** tick "đã đọc hồ sơ" → chọn quyết định → bấm xác nhận riêng. Nếu hồ sơ thiếu/mâu thuẫn/đã sửa mà chưa xác minh lại thì **chặn**, dù checkbox đã tick. Mỗi hồ sơ chỉ một kết quả — không thể vừa hoàn vừa từ chối.
+- **Quá hạn (24h phản hồi / 48h xem xét giả định):** gắn ưu tiên và chuyển trưởng nhóm ngay; **không** tự thực thi tiền, **không** tự xử thua bên im lặng, **không** tuyên bố gia hạn. Nút "Giả lập quá hạn" chỉ tăng mức ưu tiên.
+
+### Tool khó xếp nhất: `soan_hoan_tien`
+
+| Thành viên | Chọn độc lập | Lý do / cái giá (trỏ về §2) |
+|---|---|---|
+| Phạm Văn Chiêu | Tự làm khi chứng cứ rõ | Giảm chờ cho người mua ở S07 (nhãn M khác size L, shop nhận nhầm). Cái giá: AI có thể đánh giá sai "đủ rõ" — S02 cho thấy lời khiếu nại thuyết phục vẫn dẫn tới hoàn oan |
+| **Đào Hồng Thắng** | **Cần người duyệt** | Hoàn sai khiến người bán mất tiền và có thể mất hàng, khó đảo. Ở S02 lời đe doạ không chứng minh hàng sai; trưởng nhóm cần xem bản lúc đặt và phản hồi hai phía. Chấp nhận chờ ở bước tiền, nhưng AI hướng dẫn và thu thập chứng cứ ngay để giảm thời gian chờ |
+| Trần Trung Kiên | Cần người duyệt | Tránh thiệt hại tài chính khó khắc phục do tin một phía hoặc dùng nhầm phiên bản (S01/S02). Cấm tuyệt đối thì S07 có căn cứ không được giải quyết tới cùng |
+
+**Nhóm chốt: cần người duyệt.** Căn cứ: hậu quả hoàn sai khó đảo (S02), trong khi cấm hoàn tiền làm kẹt các ca có căn cứ (S01, S07). Cái giá của chờ được giảm bằng: AI hướng dẫn ngay ở S07, ưu tiên + chuyển trưởng nhóm ở S09.
+
+### Thử mức đã đặt trên 3 kịch bản
+
+| Ca | Cái sai có bị chặn? | Còn việc nào làm khi lẽ ra phải hỏi? | Người dùng có phải chờ vô ích? |
+|---|---|---|---|
+| **S01** (đắt nhất) | Có — mâu thuẫn bản mô tả khoá cả hai tool tiền; không tự từ chối | Không — AI yêu cầu bổ sung đúng đơn, không đoán bản hiện tại là hợp đồng | Không — thu thập và chuyển người chạy ngay; chỉ bước tiền chờ người |
+| **S02** (đắt nhất) | Có — tem khớp không tự hoàn, cũng không tự bác; đe doạ không đổi mức | Không — chờ làm rõ cách đo và quyền phản hồi | Người mua bổ sung được ngay; chờ duyệt tiền là cần thiết vì có bên mất tiền |
+| **S07** (bình thường) | Có — tiền chỉ chạy sau duyệt | Không — không xin lại ảnh/nhận lỗi đã có | Hướng dẫn trả hàng không chờ; nhận tiền vẫn chờ người — chi phí có chủ đích |
+
+### Luật thêm và tool tách bước
+
+- **Tách bước `soan_hoan_tien`:** tên tool gợi ý "soạn nháp" nhưng thực tế là chuyển tiền. Nhóm tách thành hai bước: AI chỉ **chuẩn bị hồ sơ + đề xuất căn cứ**; việc **thực thi** chỉ xảy ra sau khi trưởng nhóm xác nhận. Lý do: tránh người đọc tưởng đây là bước vô hại rồi để AI tự gọi.
+- **Luật giới hạn tần suất:** `yeu_cau_bang_chung` tối đa 1 lần/bên/phiên bản — tránh spam và áp lực lên bên kia.
+- **Luật phiên bản:** mọi sửa đổi lời khai/chứng cứ tăng phiên bản và vô hiệu xác nhận cũ — tránh duyệt tiền trên dữ liệu đã lỗi thời (S10).
+- **Luật im lặng:** quá hạn ≠ đồng ý, ≠ thua; chỉ dẫn tới ưu tiên và chuyển người.
+
+### Một mức tự chủ đã đổi lời hứa với người dùng
+
+- **Trước:** "AI tự giải quyết và hoàn tiền ngay."
+- **Sau:** "Trợ lý giúp đối chiếu và chuẩn bị bước tiếp theo; quyết định chuyển tiền do trưởng nhóm duyệt."
+- Đây là lời hứa về **giới hạn quyền**, không phải lời hứa AI luôn đúng. Đổi lại, lời hứa về tốc độ chuyển sang phần AI làm được ngay: hướng dẫn, xin chứng cứ, chuyển người.
 
 ## §5. Prototype  (chặng 5)
 - Link hoặc file · công cụ · phần nào mock · có lời gọi AI thật không.
