@@ -178,13 +178,75 @@ Cách sửa đi theo loại lỗi: khoá nguồn căn cứ là bản lúc đặt
 - **Sau:** "Trợ lý giúp đối chiếu và chuẩn bị bước tiếp theo; quyết định chuyển tiền do trưởng nhóm duyệt."
 - Đây là lời hứa về **giới hạn quyền**, không phải lời hứa AI luôn đúng. Đổi lại, lời hứa về tốc độ chuyển sang phần AI làm được ngay: hướng dẫn, xin chứng cứ, chuyển người.
 
-## §5. Prototype  (chặng 5)
-- Link hoặc file · công cụ · phần nào mock · có lời gọi AI thật không.
-- 1–2 ảnh có đánh số; mỗi số: thể hiện gì · nguyên tắc HAX/PAIR nào · mức tự chủ nào.
-- Quyết định: cách hiện độ chắc/bằng chứng và điều khiển mức tự chủ — đã nghĩ tới cách nào khác, vì sao chọn cách này.
+## §5. Prototype
 
-## §6. Tốt là gì  (chặng 6 — nhẹ, bỏ được nếu thiếu giờ)
-- 3 tiêu chí Pass/Fail chấm được; thiết kế của nhóm đạt tiêu chí nào trên 2 kịch bản đắt nhất; lỗi còn lại.
+**Mở:** [prototype/index.html](prototype/index.html) bằng Chrome/Edge, không cần server hay cài thư viện. Công cụ: HTML/CSS/JavaScript thuần; Chrome headless/CDP dùng riêng cho QA và chụp ảnh. Không có lời gọi AI thật, không xin bonus API. Nhãn AI trong UI chỉ là vai trò mô phỏng; nội dung phản hồi và các gói bổ sung là fixture có sẵn, không phân tích văn bản tự do.
+
+Hai màn hình:
+
+1. **Người mua:** đơn, lời phản ánh, nguồn đối chiếu, trạng thái bằng chứng, bước tiếp theo, sửa thông tin và chuyển người.
+2. **Hồ sơ xem xét:** cùng căn cứ hai phía, góc nhìn người bán có quyền phản hồi và góc nhìn trưởng nhóm có cổng duyệt. Đổi vai trò chỉ để demo, không phải đăng nhập/phân quyền thực.
+
+### Ảnh chụp thật và traceability
+
+![Ảnh 1 — S01 có hai bản mô tả mâu thuẫn; chưa quyết định tiền; marker 1, 2, 3](prototype/screenshot-01.png)
+
+![Ảnh 2 — căn cứ hai phía đã bổ sung; trưởng nhóm đọc và chọn quyết định; vẫn cần bấm xác nhận](prototype/screenshot-02.png)
+
+| Vị trí UI | Nguyên tắc | State / tool / mức tự chủ | Bằng chứng ảnh |
+|---|---|---|---|
+| **[1] Căn cứ đối chiếu / hồ sơ** | G11 | Nguồn lúc đặt là căn cứ; hiện tại chỉ chỉ ra thay đổi; hai lời khai là fixture, chưa là phán quyết | Ảnh 1 trái; ảnh 2 trái |
+| **[2] Bước tiếp theo** | G10 | S01/S02 cần bổ sung; `yeu_cau_bang_chung`, `chuyen_truong_nhom` tự làm có giới hạn; không có nút phạt | Ảnh 1 phải và nhật ký |
+| **[2] Cổng duyệt** | G10 | Hai tool tiền cần trưởng nhóm đọc, chọn và xác nhận; thiếu/mâu thuẫn khoá cả nút lẫn hàm | Ảnh 2 phải; QA T8/T14 kiểm chứng trạng thái bị khoá |
+| **[3] Sửa thông tin** | G9 | Lưu sửa tăng phiên bản, bỏ kết luận/duyệt, giữ nhật ký yêu cầu; không giả thu hồi tin | Ảnh 1 dưới trái; QA T9/T14 |
+
+**Lựa chọn cách thể hiện:** chọn nhãn “Mâu thuẫn / Chưa đủ căn cứ / Đủ căn cứ xem xét” kèm nguồn, vì người xem tự kiểm tra được lý do. Loại thanh “95% tin cậy” do không có model/calibration; loại chỉ có một bong bóng chat vì dễ chôn mất nguồn và quyền duyệt. Chọn bản lúc đặt và hiện tại xếp dọc, dùng chung bố cục ở mobile; loại bảng nhiều cột vì khó đọc trên điện thoại. Chọn checkbox đọc + quyết định + nút xác nhận riêng vì một nút “đồng ý” không chỉ rõ ai mất tiền. Nhược điểm: người duyệt vẫn có thể tick máy móc; fixture không kiểm chứng được chất lượng đánh giá của con người.
+
+**State và guard:** chọn ca/reset → hồ sơ mới; đối chiếu → thiếu/mâu thuẫn hoặc đủ căn cứ; bổ sung hai phía → đủ để xem xét; đọc + chọn + xác nhận bởi vai trưởng nhóm → một quyết định MÔ PHỎNG. Sửa trước quyết định → phiên bản mới, không đủ căn cứ cho nội dung sửa tự do. Bộ demo không tự xác minh nội dung mới, phải chuyển người. Sau quyết định, nút “Yêu cầu xem lại” tạo hàng chờ mô phỏng, giữ kết quả cũ và không gọi tiền lần nữa. Huỷ chuyển chỉ huỷ hàng chờ trước quyết định; không huỷ yêu cầu chứng cứ đã ghi. Bắt đầu lại demo không phải undo chuyển tiền.
+
+**Giới hạn có chủ đích:** ảnh/tem/phiên bản mô tả được biểu diễn bằng văn bản dựng, không có ảnh hàng thật hoặc lịch sử kiểm chứng; cả phản hồi người mua và người bán có thể được thêm bằng nút diễn tập. Người dùng chọn ca sẵn hoặc sửa để đi đường chuyển người; không có chatbot, upload, OCR hay dữ liệu bền vững. Reload xoá state. Không cung cấp bằng chứng về hiệu quả với người dùng thật.
+
+## §6. Tốt là gì
+
+Đúng **3 tiêu chí Pass/Fail** cho bản thiết kế này; không đồng nghĩa đã đủ điều kiện phát hành sản phẩm thật.
+
+| Mã | Input / thao tác | Pass rule | Fail condition |
+|---|---|---|---|
+| E1 — Nguồn có thể kiểm tra | S01/S02, bấm đối chiếu | Hiện đúng bản lúc đặt, hiện tại, lời khai hai phía; S01 báo mâu thuẫn, S02 chưa đủ căn cứ; không kết luận từ bản hiện tại hay lời đe doạ | Thiếu/đánh tráo nguồn, bịa phần trăm tin cậy, tự cho bên nào thắng |
+| E2 — Cổng quyết định tiền | Hai ca trước và sau bổ sung, thử duyệt | Trước đủ chứng cứ: nút/hàm đều chặn; sau bổ sung: chưa đọc/chưa chọn vẫn chặn; đúng vai trò + đọc + chọn phù hợp mới xác nhận được một lần, chỉ MÔ PHỎNG | Có state tiền trước duyệt, chấp nhận quyết định trái fixture, thực thi lại hoặc có giao dịch ngoài browser |
+| E3 — Phản hồi và sửa có tác dụng | Hai ca: xem phía người bán, chuẩn bị duyệt rồi sửa lời khai | Có phản hồi hai phía và hạn 24h giả định; sửa tăng phiên bản, xoá xác nhận/kết luận cũ; chứng cứ cũ không bị giả thu hồi; có đường chuyển người và không quyết tiền | Người bán không được nghe, sửa vẫn giữ hiệu lực duyệt, im lặng tự xử thua, hoặc không có đường chuyển người |
+
+**Kết quả chấm thử:** PASS trên bản chạy Chrome headless qua CDP, ngày 13/11/2026; T14 thực hiện cả E1/E2/E3 riêng cho S01 và S02, cùng kiểm tra bổ trợ T1/T2/T8/T9. Đây là QA bằng sự kiện DOM và kiểm tra state/DOM thật, có Enter/Tab qua giao thức input; chưa thay thế nhóm tự bấm thử bằng tay hoặc nghiên cứu với người dùng.
+
+| Ca | E1 | E2 | E3 | Rủi ro còn lại |
+|---|---|---|---|---|
+| S01 | PASS | PASS | PASS | Bản lưu có thể bị giả/mất trong hệ thống thật; chưa giải quyết xác thực nguồn |
+| S02 | PASS | PASS | PASS | Fixture bổ sung người mua nhận nhầm là dựng; tem khớp không chứng minh mọi đặc tính đều đúng |
+
+Rủi ro chung: không có xác thực người duyệt, chống sửa log, đo SLA hay bảo toàn quyền khi gần hết hạn; không đo năng lực model vì không có model. Nhóm cần thử bằng tay, chỉnh tiêu chí nếu không phù hợp và ghi lỗi quan sát thêm.
 
 ## §7. Demo
-- Ca lạ nhận được ở demo: prototype đã làm gì, và nhóm có đổi ý gì sau ca đó không.
+
+### Kế hoạch trình bày — chưa ghi nhận demo thực tế
+
+| Người phụ trách theo phân công | Nội dung chuẩn bị | Thời lượng dự kiến |
+|---|---|---|
+| Phạm Văn Chiêu | Giới thiệu lát cắt, hai hướng mất tiền trong S01/S02 và hậu quả nếu AI sai | 30 giây |
+| Đào Hồng Thắng | Trình diễn đối chiếu S01, chỉ nguồn [1], bước tiếp theo [2], sửa thông tin [3]; giải thích UX khi không chắc và mức tự chủ | 90 giây |
+| Trần Trung Kiên | Trình diễn cổng duyệt và kết quả mô phỏng; giải thích kiểm thử, tiêu chí Pass/Fail và tiếp nhận ca lạ | 120 giây |
+
+**Luồng demo chính S01:** chọn ca mô tả bị sửa → Đối chiếu dữ liệu giả → chỉ ra bản lúc đặt 6L / hiện tại 5L, trạng thái mâu thuẫn → Hồ sơ xem xét / Trưởng nhóm: xác nhận tiền bị khoá → về Người mua / Bổ sung dữ liệu giả hai phía → Chuyển trưởng nhóm → Hồ sơ / Trưởng nhóm → đọc căn cứ hai phía → chọn hoàn tiền → xác nhận MÔ PHỎNG. Việc bổ sung là lời khai dựng sẵn, không phải xác minh ảnh thật.
+
+**Phần kiểm soát và kiểm thử do Kiên phụ trách:** trước khi bổ sung, chỉ ra cổng duyệt chặn cả nút và hàm quyết định; sau khi bổ sung vẫn cần bước đọc, chọn và xác nhận riêng. Nếu sửa lời khai trước duyệt tại [3], xác nhận cũ mất hiệu lực. Sau quyết định chỉ có đường yêu cầu trưởng nhóm xem lại, không hứa thu hồi tiền. Dẫn QA T8/T9/T14 và ba tiêu chí E1/E2/E3 để giải thích cách kiểm chứng. Kết quả QA tự động có Codex hỗ trợ; không thay thế việc nhóm tự diễn tập.
+
+**Ca đối chứng S02:** tem khớp mô tả danh định chưa đủ kết luận mọi đặc tính đúng; thêm lời đe doạ không đổi căn cứ hay mức tự chủ. Chỉ sau bổ sung hai phía dựng sẵn và trưởng nhóm xác nhận mới có kết quả từ chối mô phỏng.
+
+**Xử lý ca lạ:** xác định đơn, nguồn, thông tin còn thiếu và bên chịu hại; đối chiếu mức tự chủ đã đặt. Nếu fixture không hỗ trợ nội dung mới, dùng sửa thông tin để thể hiện cần xác minh lại rồi chuyển trưởng nhóm, giải thích giới hạn bằng lời. Không nhận là model hiểu tự do. Yêu cầu phạt shop hay thông tin liên hệ vẫn phải theo giới hạn đã nêu; quá hạn chỉ ưu tiên, không tự xử thua.
+
+### Cập nhật sau demo
+
+- Ca lạ người xem đưa nguyên văn: CHỜ CẬP NHẬT SAU DEMO.
+- Prototype hoặc nhóm đã xử lý thế nào: CHỜ CẬP NHẬT SAU DEMO.
+- Quyết định thay đổi sau phản hồi và lý do, nếu có: CHỜ CẬP NHẬT SAU DEMO.
+
+Chưa xác nhận demo đã diễn ra hoặc có bonus trước lớp; không ghi tình huống diễn tập thành ca lạ thực tế.
