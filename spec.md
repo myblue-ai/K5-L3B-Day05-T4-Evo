@@ -1,6 +1,6 @@
 # Bài nộp LAB5 — T4 · Trợ lý khiếu nại trung lập
 
-**Nhóm / lớp / bàn-zone:** CẦN NHÓM ĐIỀN · **Track:** T4.
+**Nhóm:** Evo · **Lớp / bàn-zone:** CẦN NHÓM ĐIỀN · **Track:** T4.
 
 | Họ và tên | Mã học viên | Việc đã làm thực tế |
 |---|---|---|
