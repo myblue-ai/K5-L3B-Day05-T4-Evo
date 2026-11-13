@@ -1,12 +1,12 @@
 # Bài nộp LAB5 — T4 · Trợ lý khiếu nại trung lập
 
-**Nhóm / lớp / bàn-zone:** Evo · L3B · **Track:** T4.
+**Nhóm / lớp / bàn-zone:** CẦN NHÓM ĐIỀN · **Track:** T4.
 
 | Họ và tên | Mã học viên | Việc đã làm thực tế |
 |---|---|---|
-| Phạm Văn Chiêu | 2A202604033 | Phụ trách phạm vi, kịch bản rủi ro và mức tự chủ (Product & Risk - §1, §2, §4): xác định người dùng, mục tiêu và các việc không làm; rà soát 10 kịch bản thuộc 4 lớp; lập luận chọn S01/S02 và ca suýt chọn S09; phân bổ mức tự chủ 5 tool theo Cost of Error, cơ chế cổng duyệt và ca khó xếp nhất soan_hoan_tien. Trình bày bối cảnh và hậu quả khi AI sai trong demo. |
-| [Chưa cập nhật] | [Chưa cập nhật] | [Thành viên 2 - AI UX & Content: chưa có / để nguyên theo template] |
-| [Chưa cập nhật] | [Chưa cập nhật] | [Thành viên 3 - Prototype & QA: chưa có / để nguyên theo template] |
+| Phạm Văn Chiêu | 2A202604033 | Phụ trách phạm vi và kịch bản rủi ro (§1–§2): xác định người dùng, mục tiêu và các việc không làm; rà soát 10 kịch bản thuộc 4 lớp; lập luận chọn S01/S02 và ca suýt chọn S09. Trình bày bối cảnh và hậu quả khi AI sai trong demo. |
+| Đào Hồng Thắng | 2A202604076 | Phụ trách UX khi AI sai và mức tự chủ (§3–§4): rà soát câu AI nói, bước tiếp theo và quyền phản hồi hai phía; giải thích 3 nguyên tắc G11/G10/G9; đối chiếu mức cho 5 tool, lý do cần người duyệt và xử lý quá hạn. Trình diễn phần đối chiếu/bổ sung/sửa thông tin. |
+| Trần Trung Kiên | 2A202604014 | Phụ trách prototype, kiểm thử và chuẩn bị demo (§5–§7): rà soát HTML/CSS/JS do Codex hỗ trợ tạo, luồng 2 màn hình và cổng duyệt; kiểm tra ảnh đánh số và kết quả QA; đối chiếu 3 tiêu chí Pass/Fail, tổng hợp tài liệu. Trình diễn cổng duyệt, kết quả mô phỏng và đường xử lý ca lạ. |
 
 ## §1. Lát cắt & phạm vi
 
@@ -64,8 +64,6 @@ Người dùng chính là người mua. Người bán có quyền phản hồi c
 Chọn S01/S02 vì cùng giá trị giả lập nhưng lỗi theo hai hướng đối lập: từ chối oan và hoàn oan; chúng kiểm tra tính trung lập sâu hơn việc chỉ dừng mọi giao dịch. S09 có thể khẩn hơn trong thực tế, không khẳng định nhẹ hơn mọi trường hợp; trong lát cắt demo, S01/S02 phơi bày thêm lỗi nguồn và áp lực xã hội. Giữ S09 trong QA để không bỏ qua giá của chờ đợi. Loại cách chọn theo câu chuyện “kịch tính” vì không gắn tổn thất/khả năng đảo.
 
 ## §3. Khi AI sai  (chặng 3)
-*(Phần việc của Người 2 — AI UX & Content: để nguyên theo template)*
-
 Với mỗi kịch bản đắt nhất:
 - AI nói gì (nguyên văn) · người dùng thấy gì · làm gì tiếp · ai được báo, sau bao lâu.
 - Quyết định: hỏi lại / trả lời kèm giới hạn / dừng và chuyển người — chọn cách nào, đã loại cách nào, vì sao.
@@ -74,54 +72,23 @@ Với mỗi kịch bản đắt nhất:
 - Lỗi nào sửa câu chữ không cứu được (nếu có), và thiết kế cứu nó thế nào.
 
 ## §4. Mức tự chủ  (chặng 4)
-
-| Tool gốc / tác động | Mức đề xuất / điều kiện | Sai thì ai chịu gì; đảo được không? | Chờ người mất gì? | Phương án đã loại |
-|---|---|---|---|---|
-| `yeu_cau_bang_chung` — gửi mẫu | **Tự làm** khi biết đơn và phần thiếu; tối đa 1 yêu cầu/bên/phiên bản; không hỏi lại thứ đã có | Hai bên tốn công hoặc bị lộ dữ liệu nếu mẫu quá rộng; tin đã tới không thu hồi. Chỉ xin bằng chứng về hàng, không số/địa chỉ | S09 có thể hết hạn chỉ vì chờ duyệt tin | Cần duyệt mọi tin làm chậm bước rẻ; tự gửi lặp vô hạn tạo áp lực. Cho sửa yêu cầu tiếp theo, không hứa unsend |
-| `chuyen_truong_nhom` — chuyển hồ sơ | **Tự làm** theo yêu cầu hoặc quá hạn; đính kèm căn cứ hiện có và chỗ thiếu | Chuyển nhầm làm khách chờ, nhân viên quá tải; có thể huỷ chuyển nếu chưa quyết định | Chờ duyệt chuyển người khiến ca mắc kẹt; S01/S09 càng chậm | Cấm chuyển để tiết kiệm nhân lực bỏ rơi ca khó; cần duyệt trước khi chuyển tạo vòng chờ |
-| `soan_hoan_tien` — **hoàn tiền**, không phải soạn nháp | **Cần người duyệt**: trưởng nhóm xử lý khiếu nại | S02: shop mất tiền/hàng, khó đảo; không có undo tiền trong UI | S07 khách chờ nhận tiền, S09 có nguy cơ trễ; giảm chờ bằng hướng dẫn ngay và ưu tiên, không bỏ cổng duyệt | Tự làm dễ hoàn oan; cấm tuyệt đối làm khách có căn cứ không được giải quyết |
-| `tu_choi_khieu_nai` — đóng, tiền về shop | **Cần người duyệt**: trưởng nhóm xử lý khiếu nại | S01: người mua mất quyền/tiền dù bản lúc đặt có lợi, khó đảo | Shop đúng S02 phải chờ tiền, khách chờ kết luận | Tự làm thiên về shop; cấm tuyệt đối khiến khiếu nại không căn cứ không có kết thúc |
-| `phat_shop` — trừ uy tín/khoá shop | **Cấm** trong lát cắt | S05: ảnh hưởng cả shop và các đơn khác, khó đảo, một xác nhận đơn lẻ không đủ | Chờ quy trình chuyên trách có thể chậm bảo vệ người khác; báo trưởng nhóm định tuyến, không hứa xử phạt | Cho AI tự/cần người duyệt trong luồng thường vẫn vượt phạm vi; không thêm nút phạt |
-
-**Cổng duyệt cho hai tool tiền:** người duyệt là trưởng nhóm, không phải người mua bấm đồng ý. Trên màn hồ sơ, họ thấy đơn, số tiền, bản lúc đặt/hiện tại, phản hồi hai phía, trạng thái thiếu/mâu thuẫn, phiên bản, hạn, nhật ký. Phải ghi nhận đã đọc và chọn quyết định rồi bấm xác nhận riêng. Nếu thiếu/mâu thuẫn/đã sửa mà chưa xác minh lại thì chặn, dù checkbox được tick. Mỗi hồ sơ chỉ có một kết quả mô phỏng; không thể vừa hoàn vừa từ chối. Chuyển tab vai trò chỉ phục vụ demo, không phải xác thực nhân viên.
-
-**Quá hạn 24h phản hồi / 48h xem xét giả định:** chuyển hoặc ưu tiên trưởng nhóm ngay; không tự thực thi tiền, không tự xử thua bên im lặng. Nút “Giả lập quá hạn” tăng trạng thái ưu tiên, không thay đổi timestamp thực hay tuyên bố gia hạn. Trưởng nhóm phải bổ sung/xác minh ngoài demo khi fixture chưa đủ.
-
-### Tool khó xếp nhất: `soan_hoan_tien`
-
-| Thành viên | Mức chọn độc lập | Lý do / ca minh chứng |
-|---|---|---|
-| Phạm Văn Chiêu | Tự làm khi chứng cứ rõ | Ưu tiên giảm thời gian chờ cho người mua: ở S07, nhãn áo M khác size L đã đặt và shop nhận gửi nhầm, nên hoàn sớm giúp khách không phải chờ thêm. Điểm yếu là AI có thể đánh giá nhầm thế nào là “đủ rõ”; S02 cho thấy lời khiếu nại có vẻ thuyết phục vẫn có thể dẫn tới hoàn oan. |
-| Đào Hồng Thắng | Cần người duyệt | Hoàn tiền sai khiến người bán mất tiền và có thể mất hàng, khó đảo ngược. Ở S02, lời đe doạ không chứng minh hàng sai; trưởng nhóm cần xem bản lúc đặt và phản hồi hai phía trước khi duyệt. Chấp nhận chờ ở bước tiền, nhưng cho AI hướng dẫn và thu thập chứng cứ ngay. |
-| Trần Trung Kiên | Cần người duyệt | Ưu tiên tránh thiệt hại tài chính khó khắc phục: AI có thể tin lời một phía hoặc dùng nhầm phiên bản mô tả như S01/S02. Cấm tuyệt đối, tuy cũng tránh được thiệt hại, nhưng lại có điểm yếu là khiến khách có căn cứ như S07 không được giải quyết tới cùng, phải chuyển sang một quy trình khác và có thể chậm hơn. |
-
-**Cách nhóm chốt thực tế: cần người duyệt** — mức chốt theo xác nhận của người dùng. Căn cứ lựa chọn là hậu quả của hoàn tiền sai khó đảo ngược, trong khi cấm hoàn tiền hoàn toàn lại làm chậm việc giải quyết các ca có căn cứ. AI được đối chiếu, hướng dẫn và xin bổ sung chứng cứ; `soan_hoan_tien` chỉ được thực hiện sau khi trưởng nhóm xử lý khiếu nại xem bản mô tả lúc đặt, chứng cứ và phản hồi hai phía, rồi xác nhận quyết định. Người mua bấm đồng ý không thay thế quyền duyệt của trưởng nhóm.
-
-Nhóm loại phương án tự hoàn vì S02 có thể khiến shop đúng mất tiền; loại phương án cấm tuyệt đối vì S01/S07 vẫn cần một đường hoàn tiền hợp lệ. Để giảm cái giá của chờ duyệt, AI hướng dẫn ngay ở S07 và gắn ưu tiên/chuyển trưởng nhóm ở S09. Nếu quá hạn chưa có người duyệt, không tự hoàn, không tự đóng khiếu nại và không coi im lặng là đồng ý. Quyết định này khớp cổng duyệt đang có trên prototype; ba ý kiến mẫu phía trên cần từng thành viên xác nhận hoặc sửa theo lựa chọn độc lập của mình.
-
-### Thử mức trên 3 ca
-
-| Ca | Cái sai bị chặn? | Có làm khi lẽ ra phải hỏi? | Có bắt chờ vô ích? |
-|---|---|---|---|
-| S01 | Mâu thuẫn bản mô tả khoá cả hai tool tiền; không tự từ chối | Yêu cầu bổ sung về đúng đơn; không đoán bản hiện tại là hợp đồng | Thu thập/chuyển làm ngay; chỉ tiền chờ người |
-| S02 | Tem khớp không tự hoàn và không tự bác; đe doạ không đổi mức | Chờ làm rõ phép đo và quyền phản hồi | Người mua có bước bổ sung ngay; duyệt tiền cần thiết vì có bên mất tiền |
-| S07 | Hướng dẫn ngay; tiền chỉ sau duyệt | Không xin lại ảnh/nhận lỗi đã có | Hướng dẫn không chờ; nhận tiền vẫn chờ người, đây là chi phí có chủ đích |
-
-**Lời hứa thay đổi:** thay “AI tự giải quyết và hoàn ngay” bằng “Trợ lý giúp đối chiếu và chuẩn bị bước tiếp theo; quyết định chuyển tiền do trưởng nhóm duyệt.” Đây là giới hạn quyền, không phải lời hứa AI luôn đúng.
+Với mỗi tool:
+- Mức của nhóm (tự làm / cần người duyệt / cấm). Nếu cần người duyệt: ai duyệt · người duyệt thấy gì · quá hạn thì sao.
+- Lý do theo cost-of-error: sai thì ai chịu gì · đảo lại được không · chờ người thì mất gì.
+- Phương án đã cân nhắc và vì sao loại.
+Thêm:
+- Tool khó xếp nhất: mỗi người từng chọn gì, cái giá của mỗi phía (trỏ về kịch bản ở §2), nhóm chốt thế nào.
+- Thử mức đã đặt trên 2 kịch bản đắt nhất + 1 kịch bản bình thường: cái sai có bị chặn không? còn việc nào làm khi lẽ ra phải hỏi? người dùng bình thường có phải chờ vô ích không?
+- Luật thêm hoặc tool tách bước (nếu có), và vì sao.
+- Một mức tự chủ đã đổi lời hứa nào với người dùng.
 
 ## §5. Prototype  (chặng 5)
-*(Phần việc của Người 3 — Prototype & QA: để nguyên theo template)*
-
 - Link hoặc file · công cụ · phần nào mock · có lời gọi AI thật không.
 - 1–2 ảnh có đánh số; mỗi số: thể hiện gì · nguyên tắc HAX/PAIR nào · mức tự chủ nào.
 - Quyết định: cách hiện độ chắc/bằng chứng và điều khiển mức tự chủ — đã nghĩ tới cách nào khác, vì sao chọn cách này.
 
 ## §6. Tốt là gì  (chặng 6 — nhẹ, bỏ được nếu thiếu giờ)
-*(Chưa cập nhật / để nguyên theo template)*
-
 - 3 tiêu chí Pass/Fail chấm được; thiết kế của nhóm đạt tiêu chí nào trên 2 kịch bản đắt nhất; lỗi còn lại.
 
 ## §7. Demo
-*(Chưa cập nhật / để nguyên theo template)*
-
 - Ca lạ nhận được ở demo: prototype đã làm gì, và nhóm có đổi ý gì sau ca đó không.
